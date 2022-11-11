@@ -66,18 +66,40 @@ df = pd.read_csv('table.csv') # read table into pandas dataframe
 discard=["single cell"]
 del_single=df[~df.source_name_ch1.str.contains('|'.join(discard))]
 del_single.to_csv('del_single.csv')
+
 '''
-Create a table with uniqe values
+Create a table with only immune cells
+'''
+df=pd.read_csv('del_single.csv')
+immune_cell= df[df['source_name_ch1'].str.contains('Innate lymphoid cell|CD8|CD4|macrophage|microglia|Th17|B cells', case=False)]
+immune_cell.to_csv('immune_cell.csv')
+'''
+Create a table with uniqe values by cell type
 '''
 df = pd.read_csv('del_single.csv')
 cell_count=df.groupby('source_name_ch1')['platform_id'].value_counts() #count on two column basis
 #cell_count=df['source_name_ch1'].value_counts() #create a table with count of uniq cell types
 cell_count.to_csv('cell_count.csv') # put table into file .csv
+'''
+Create a table with uniqe values by platform id
+'''
+df = pd.read_csv('del_single.csv')
+platform_count=df.groupby('platform_id')['source_name_ch1'].value_counts() #count on two column basis
+#cell_count=df['source_name_ch1'].value_counts() #create a table with count of uniq cell types
+platform_count.to_csv('platform_count.csv') # put table into file .csv
 
-#contain_kal = df[df['data_processing'].str.contains('allisto')]
-#contain_kal.to_csv('contain_kal.csv')
-#df = pd.read_csv('contain_kal.csv')
-#print(len(df))
-#contain_cell= df[df['source_name_ch1'].str.contains('Innate lymphoid cell')]
-#contain_kalcell.to_csv('contain_kallisto_cell.csv')
-#df = pd.read_csv('contain_kallisto_cell.csv')
+'''
+Create a table with uniqe values by cell type - only immune cells
+'''
+df = pd.read_csv('immune_cell.csv')
+cell_count=df.groupby('source_name_ch1')['platform_id'].value_counts() #count on two column basis
+#cell_count=df['source_name_ch1'].value_counts() #create a table with count of uniq cell types
+cell_count.to_csv('cell_count2.csv') # put table into file .csv
+'''
+Create a table with uniqe values by platform id - only immune cells
+'''
+df = pd.read_csv('immune_cell.csv')
+platform_count=df.groupby('platform_id')['source_name_ch1'].value_counts() #count on two column basis
+#cell_count=df['source_name_ch1'].value_counts() #create a table with count of uniq cell types
+platform_count.to_csv('platform_count2.csv') # put table into file .csv
+
