@@ -102,4 +102,8 @@ df = pd.read_csv('immune_cell.csv')
 platform_count=df.groupby('platform_id')['source_name_ch1'].value_counts() #count on two column basis
 #cell_count=df['source_name_ch1'].value_counts() #create a table with count of uniq cell types
 platform_count.to_csv('platform_count2.csv') # put table into file .csv
+'''
+Let's change the last table. Remove very small values, type of cells into columns, platform id into rows
+And in partition wil be counter values
+'''
 
