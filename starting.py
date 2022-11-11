@@ -11,8 +11,6 @@ for key in mouse['meta'].keys():
     print(key)
 list_of_columns=mouse['meta']['samples'].keys()
 print(list_of_columns)
-#for i in mouse['meta']['samples']['library_selection']:    print(i)
-
 
 
 '''
@@ -71,4 +69,13 @@ status=mouse['meta']['samples']['status']
 status_data=pd.DataFrame(status, columns=['status'])
 taxid_ch1=mouse['meta']['samples']['taxid_ch1']
 taxid_ch1_data=pd.DataFrame(taxid_ch1, columns=['taxid_ch1'])
-pd.concat([taxid_ch1_data,status_data,source_name_ch1_data,series_id_data,relation_data,readstotal_data,readsaligned_data,platform_id_data,organism_ch1_data, molecule_ch1_data, ],sort=False, axis=1)
+table=pd.concat([taxid_ch1_data,status_data,source_name_ch1_data,series_id_data,relation_data,readstotal_data,readsaligned_data,platform_id_data,organism_ch1_data, molecule_ch1_data,library_strategy_data,library_selection_data, library_source_data,instrument_model_data,extract_protocol_ch1_data, characteristics_ch1_data,data_processing_data,geo_accession_data,type_data,title_data ],sort=False, axis=1)
+table.to_csv('table.csv')
+df = pd.read_csv('table.csv')
+contain_cell = df[df['source_name_ch1'].str.contains('T cell')]
+contain_cell.to_csv('contain_cell.csv')
+df = pd.read_csv('contain_cell.csv')
+contain_kallistoandcell= df[df['data_processing'].str.contains('kallisto')]
+contain_kallistoandcell.to_csv('contain_kallisto_cell.csv')
+df = pd.read_csv('contain_kallisto_cell.csv')
+print(df)
