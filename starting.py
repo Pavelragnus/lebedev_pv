@@ -81,4 +81,3 @@ cell_count.to_csv('cell_count.csv') # put table into file .csv
 #contain_cell= df[df['source_name_ch1'].str.contains('Innate lymphoid cell')]
 #contain_kalcell.to_csv('contain_kallisto_cell.csv')
 #df = pd.read_csv('contain_kallisto_cell.csv')
-#print(df)
