@@ -2,8 +2,9 @@ import numpy as np
 import h5py
 import pandas as pd
 from itertools import islice
+from collections import Counter
 
-mouse = h5py.File('mouse_matrix_v11.h5', "r")
+mouse = h5py.File('mouse_matrix_v11.h5', "r") # fot reading h5 dataframe
 data=mouse.keys()
 for key in mouse.keys():
     print(key)
@@ -14,20 +15,7 @@ print(list_of_columns)
 
 
 '''
-with h5py.File('mouse_matrix_v11.h5', 'r') as h5_mouse:
-    decoder=np.vectorize(lambda x: x.decode())
-    normal_res=decoder(h5_mouse['meta/samples/source_name_ch1'])
-print(normal_res)
-finder = np. vectorize (lambda X:'T cell' in X)
-select_cells=normal_res[finder (normal_res)]
-print(len(select_cells))
-with h5py.File('mouse_matrix_v11.h5', 'r') as h5_mouse:
-    decoder=np.vectorize(lambda x: x.decode())
-    normal_res2=decoder(h5_mouse['meta/samples/data_processing'])
-print(normal_res2)
-finder = np. vectorize (lambda X:'kallisto' in X)
-select_kal=normal_res2[finder (normal_res2)]
-print(len(select_kal))
+Now every dataset from h5 file we transform into single table in pandas and then concatenate them into one table
 '''
 title=mouse['meta']['samples']['title']
 title_data=pd.DataFrame(title, columns=['title'])
@@ -70,12 +58,27 @@ status_data=pd.DataFrame(status, columns=['status'])
 taxid_ch1=mouse['meta']['samples']['taxid_ch1']
 taxid_ch1_data=pd.DataFrame(taxid_ch1, columns=['taxid_ch1'])
 table=pd.concat([taxid_ch1_data,status_data,source_name_ch1_data,series_id_data,relation_data,readstotal_data,readsaligned_data,platform_id_data,organism_ch1_data, molecule_ch1_data,library_strategy_data,library_selection_data, library_source_data,instrument_model_data,extract_protocol_ch1_data, characteristics_ch1_data,data_processing_data,geo_accession_data,type_data,title_data ],sort=False, axis=1)
-table.to_csv('table.csv')
-df = pd.read_csv('table.csv')
-contain_cell = df[df['source_name_ch1'].str.contains('T cell')]
-contain_cell.to_csv('contain_cell.csv')
-df = pd.read_csv('contain_cell.csv')
-contain_kallistoandcell= df[df['data_processing'].str.contains('kallisto')]
-contain_kallistoandcell.to_csv('contain_kallisto_cell.csv')
-df = pd.read_csv('contain_kallisto_cell.csv')
-print(df)
+'''
+Let's delete rows with words - single cell in a column 'source_name_ch1'
+'''
+table.to_csv('table.csv') # create a file .csv with our table
+df = pd.read_csv('table.csv') # read table into pandas dataframe
+discard=["single cell"]
+del_single=df[~df.source_name_ch1.str.contains('|'.join(discard))]
+del_single.to_csv('del_single.csv')
+'''
+Create a table with uniqe values
+'''
+df = pd.read_csv('del_single.csv')
+cell_count=df.groupby('source_name_ch1')['platform_id'].value_counts() #count on two column basis
+#cell_count=df['source_name_ch1'].value_counts() #create a table with count of uniq cell types
+cell_count.to_csv('cell_count.csv') # put table into file .csv
+
+#contain_kal = df[df['data_processing'].str.contains('allisto')]
+#contain_kal.to_csv('contain_kal.csv')
+#df = pd.read_csv('contain_kal.csv')
+#print(len(df))
+#contain_cell= df[df['source_name_ch1'].str.contains('Innate lymphoid cell')]
+#contain_kalcell.to_csv('contain_kallisto_cell.csv')
+#df = pd.read_csv('contain_kallisto_cell.csv')
+#print(df)
