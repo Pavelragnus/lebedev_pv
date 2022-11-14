@@ -103,7 +103,11 @@ platform_count=df.groupby('platform_id')['source_name_ch1'].value_counts() #coun
 #cell_count=df['source_name_ch1'].value_counts() #create a table with count of uniq cell types
 platform_count.to_csv('platform_count2.csv') # put table into file .csv
 '''
-Let's change the last table. Remove very small values, type of cells into columns, platform id into rows
-And in partition wil be counter values
-'''
+Let's change the last table. Remove very small values, type of cells into rows, platform id into columns
 
+'''
+df= pd.read_csv('platform_count2.csv')
+df.columns=['platform_id', 'source_name_ch1', 'counter'] # rename the columns heads
+df=df[df.counter>10] # delete the values less than 10
+table = pd.pivot_table(df, values='counter', index=['source_name_ch1'], columns=['platform_id'], aggfunc=np.sum) #create a table with platfom_id in columns
+table.to_csv('platform_count3.csv') # put table into file .csv
