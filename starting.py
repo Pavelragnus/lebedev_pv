@@ -16,6 +16,14 @@ print(list_of_columns)
 
 '''
 Now every dataset from h5 file we transform into single table in pandas and then concatenate them into one table
+import h5py
+arch_file = "/home/clever/test_cache/counts/archs4/mouse_matrix_v11.h5"
+with h5py.File(arch_file, 'r') as arch_7:
+    for key in arch_7["meta/samples"].keys():
+        a = arch_7["meta/samples/"][key]
+        
+        print(key)
+        print(a[:])
 '''
 title=mouse['meta']['samples']['title']
 title_data=pd.DataFrame(title, columns=['title'])
@@ -64,14 +72,14 @@ Let's delete rows with words - single cell in a column 'source_name_ch1'
 table.to_csv('table.csv') # create a file .csv with our table
 df = pd.read_csv('table.csv') # read table into pandas dataframe
 discard=["single cell"]
-del_single=df[~df.source_name_ch1.str.contains('|'.join(discard))]
+del_single=df[~df.source_name_ch1.str.contains('|'.join(discard))] # ~ - все, кроме того что дальше - после нее
 del_single.to_csv('del_single.csv')
 
 '''
 Create a table with only immune cells
 '''
 df=pd.read_csv('del_single.csv')
-immune_cell= df[df['source_name_ch1'].str.contains('Innate lymphoid cell|CD8|CD4|macrophage|microglia|Th17|B cells', case=False)]
+immune_cell= df[df['source_name_ch1'].str.contains('Innate lymphoid cell|CD8|CD4|macrophage|microglia|Th17|T cell|B cell', case=False)] # можно усложнить до регулярного выражения !
 immune_cell.to_csv('immune_cell.csv')
 '''
 Create a table with uniqe values by cell type
