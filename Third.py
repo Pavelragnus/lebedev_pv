@@ -18,19 +18,18 @@ for i in indices:
 create an expression table
 '''
 '''
-mouse = h5py.File('mouse_matrix_v11.h5', "r")
-d = mouse['data']
-express=d.get('expression')
-data=[]
-for i in indices2:
-    data.append(express[::,i])
-expression=pd.DataFrame(data)
-expression.to_csv('expression.csv')
+with h5py.File('mouse_matrix_v11.h5', 'r') as f:
+   data_set = f['data']['expression']
+   data=data_set[::,indices2]
+   expression = pd.DataFrame(data, columns=indices2)
+   expression.to_csv('expression.csv')
+   f.close()
+
 '''
 with h5py.File('mouse_matrix_v11.h5', 'r') as f:
    data_set = f['data']['expression']
    data=data_set[::,indices2]
-   expression = pd.DataFrame(data)
-   expression.to_csv('expression.csv')
+   expression = pd.DataFrame(data, columns=indices)
+   expression.to_csv('expression3.csv')
    f.close()
 
