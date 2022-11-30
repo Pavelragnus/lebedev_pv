@@ -5,6 +5,7 @@ from itertools import islice
 from collections import Counter
 '''
 get indicis of lines with geo accession
+indices[i]=indices[i-1] можно так 
 '''
 great_table=pd.read_csv('great_table.csv')
 df = pd.read_csv('table.csv')
@@ -14,6 +15,7 @@ indices2=[]
 for i in indices:
     f=i-1
     indices2.append(f)
+
 '''
 create an expression table
 '''
